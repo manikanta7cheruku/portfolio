@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Certifications | Manikanta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Certifications held by Manikanta."
+  />
+  <style>
+    :root {
+      --bg: #020617;
+      --accent: #6366f1;         /* Indigo */
+      --accent-soft: rgba(99, 102, 241, 0.15);
+      --accent-strong: #4f46e5;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.5);
+      --card-bg: rgba(15, 23, 42, 0.96);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #111827 0, #020617 60%, #000000 100%);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      line-height: 1.5;
+      opacity: 0;
+      animation: bodyFadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes bodyFadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    canvas#bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .page-shell {
+      position: relative;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    @media (min-width: 768px) {
+      .page-shell {
+        padding: 4rem 2rem 4.5rem;
+      }
+    }
+
+    .page-header {
+      margin-bottom: 2.3rem;
+    }
+
+    .page-kicker {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .page-kicker::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(148, 163, 184, 0.9),
+        rgba(148, 163, 184, 0)
+      );
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      font-weight: 620;
+      letter-spacing: 0.01em;
+    }
+
+    .page-subtitle {
+      margin: 0.7rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 26rem;
+      line-height: 1.6;
+    }
+
+    main {
+      margin-top: 2rem;
+    }
+
+    /* Certifications grid */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.6rem;
+      margin-top: 1.8rem;
+    }
+
+    .cert-card {
+      background: var(--card-bg);
+      border-radius: 0.9rem;
+      border: 1px solid var(--border-soft);
+      padding: 1.35rem 1.4rem 1.3rem;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.9);
+      transform-origin: center;
+      transform-style: preserve-3d;
+      transition:
+        transform 0.18s ease-out,
+        box-shadow 0.18s ease-out,
+        border-color 0.18s ease-out,
+        background 0.18s ease-out,
+        opacity 0.4s ease-out;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .cert-card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cert-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .cert-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 570;
+    }
+
+    .cert-meta {
+      font-size: 0.83rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .cert-badge-year {
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.8);
+      font-size: 0.78rem;
+      color: #d1d5db;
+    }
+
+    .cert-issuer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0.25rem 0 0.7rem;
+    }
+
+    .cert-issuer span {
+      color: #cbd5f5;
+    }
+
+    .cert-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.7rem;
+      margin-top: 0.1rem;
+    }
+
+    .cert-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      border: 1px solid rgba(99, 102, 241, 0.7);
+      color: #e5e7ff;
+      text-decoration: none;
+      background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.2),
+        rgba(79, 70, 229, 0.65)
+      );
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+      transition:
+        background 0.18s ease-out,
+        box-shadow 0.18s ease-out,
+        border-color 0.18s ease-out,
+        transform 0.18s ease-out;
+    }
+
+    .cert-link span.icon {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .cert-link:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(129, 140, 248, 0.3),
+        rgba(79, 70, 229, 0.9)
+      );
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.95);
+      transform: translateY(-1px);
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.5);
+      padding-bottom: 1px;
+    }
+
+    footer a:hover {
+      color: var(--text);
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body {
+        animation: none !important;
+      }
+
+      .cert-card {
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <div class="page-shell">
+    <header class="page-header">
+      <div class="page-kicker">Portfolio</div>
+      <h1 class="page-title">Certifications</h1>
+      <p class="page-subtitle">
+        A concise list of certifications I have completed.
+      </p>
+    </header>
+
+    <main>
+      <section aria-label="Certifications">
+        <div class="cert-grid">
+
+          <!--
+            CERTIFICATION 1
+            Replace the title, year, issuer and link with your real data.
+          -->
+          <article class="cert-card">
+            <div class="cert-header">
+              <h3 class="cert-title">Certification Title 1</h3>
+              <div class="cert-meta">
+                <span class="cert-badge-year">2024</span>
+              </div>
+            </div>
+            <p class="cert-issuer">
+              Issued by <span>Provider / Platform Name</span>
+            </p>
+            <div class="cert-actions">
+              <!-- TODO: Replace "#" with your certificate URL -->
+              <a
+                href="#"
+                class="cert-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>View certificate</span>
+                <span class="icon">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!--
+            CERTIFICATION 2
+            Replace the title, year, issuer and link with your real data.
+          -->
+          <article class="cert-card">
+            <div class="cert-header">
+              <h3 class="cert-title">Certification Title 2</h3>
+              <div class="cert-meta">
+                <span class="cert-badge-year">2023</span>
+              </div>
+            </div>
+            <p class="cert-issuer">
+              Issued by <span>Provider / Platform Name</span>
+            </p>
+            <div class="cert-actions">
+              <!-- TODO: Replace "#" with your certificate URL -->
+              <a
+                href="#"
+                class="cert-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>View certificate</span>
+                <span class="icon">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!--
+            FUTURE CERTIFICATIONS
+            When you get a new certification, copy this template,
+            paste it inside .cert-grid, and update the details:
+
+            <article class="cert-card">
+              <div class="cert-header">
+                <h3 class="cert-title">Certification Title</h3>
+                <div class="cert-meta">
+                  <span class="cert-badge-year">Year</span>
+                </div>
+              </div>
+              <p class="cert-issuer">
+                Issued by <span>Provider / Platform Name</span>
+              </p>
+              <div class="cert-actions">
+                <a
+                  href="#"
+                  class="cert-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>View certificate</span>
+                  <span class="icon">↗</span>
+                </a>
+              </div>
+            </article>
+          -->
+
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Certifications of Manikanta</span>
+      <a href="index.html">Back to portfolio home</a>
+    </footer>
+  </div>
+
+  <!-- three.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <script>
+    // === Subtle certificate-style 3D background =============================
+    // Floating "document" panels + soft grid, reacts slightly on hover.
+    (function () {
+      if (typeof THREE === "undefined") return;
+
+      const canvas = document.getElementById("bg");
+      let scene, camera, renderer;
+      let particles, gridGroup, certGroup;
+      let mouseX = 0,
+        mouseY = 0,
+        targetMouseX = 0,
+        targetMouseY = 0;
+      let hoverTarget = 0,
+        hoverValue = 0;
+
+      // Hook so hovering cards can influence the background
+      window.__setCertHover = function (value) {
+        hoverTarget = Math.max(0, Math.min(1, value || 0));
+      };
+
+      const clock = new THREE.Clock();
+
+      initScene();
+      animate();
+
+      function initScene() {
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+          50,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          100
+        );
+        camera.position.set(0, 2.5, 18);
+        camera.lookAt(0, 2, 0);
+
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x020617, 1);
+        if ("outputEncoding" in renderer && THREE.sRGBEncoding) {
+          renderer.outputEncoding = THREE.sRGBEncoding;
+        }
+
+        const ambient = new THREE.AmbientLight(0xffffff, 0.52);
+        scene.add(ambient);
+
+        const key = new THREE.DirectionalLight(0x818cf8, 0.8);
+        key.position.set(6, 7, 7);
+        scene.add(key);
+
+        const fill = new THREE.DirectionalLight(0x0f172a, 0.8);
+        fill.position.set(-5, 3, -8);
+        scene.add(fill);
+
+        // Soft particle field behind the content
+        const pGeo = new THREE.BufferGeometry();
+        const count = 320;
+        const positions = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+          const i3 = i * 3;
+          positions[i3 + 0] = (Math.random() - 0.5) * 24;
+          positions[i3 + 1] = Math.random() * 8 + 0.4;
+          positions[i3 + 2] = (Math.random() - 0.5) * 12;
+        }
+        pGeo.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+        const pMat = new THREE.PointsMaterial({
+          color: 0x4b5563,
+          size: 0.05,
+          sizeAttenuation: true,
+          transparent: true,
+          opacity: 0.75
+        });
+        particles = new THREE.Points(pGeo, pMat);
+        scene.add(particles);
+
+        // Vertical grid, like a structured document wall
+        gridGroup = new THREE.Group();
+        const gridMat = new THREE.LineBasicMaterial({
+          color: 0x111827,
+          transparent: true,
+          opacity: 0.7
+        });
+
+        const gridWidth = 20;
+        const gridHeight = 8;
+        const step = 1.6;
+        const zDepth = -4;
+
+        // Vertical lines
+        for (let x = -gridWidth / 2; x <= gridWidth / 2; x += step) {
+          const geo = new THREE.BufferGeometry();
+          const verts = new Float32Array([x, 0, zDepth, x, gridHeight, zDepth]);
+          geo.setAttribute(
+            "position",
+            new THREE.BufferAttribute(verts, 3)
+          );
+          const line = new THREE.Line(geo, gridMat);
+          gridGroup.add(line);
+        }
+
+        // Horizontal lines
+        for (let y = 0; y <= gridHeight; y += step) {
+          const geo = new THREE.BufferGeometry();
+          const verts = new Float32Array([
+            -gridWidth / 2,
+            y,
+            zDepth,
+            gridWidth / 2,
+            y,
+            zDepth
+          ]);
+          geo.setAttribute(
+            "position",
+            new THREE.BufferAttribute(verts, 3)
+          );
+          const line = new THREE.Line(geo, gridMat);
+          gridGroup.add(line);
+        }
+
+        scene.add(gridGroup);
+
+        // Floating certificate panels
+        certGroup = new THREE.Group();
+        const panelGeo = new THREE.PlaneGeometry(3.6, 2.5);
+        const baseMat = new THREE.MeshStandardMaterial({
+          color: 0x111827,
+          metalness: 0.35,
+          roughness: 0.6,
+          emissive: 0x111827,
+          emissiveIntensity: 0.55,
+          side: THREE.DoubleSide
+        });
+
+        const panelCount = 7;
+        for (let i = 0; i < panelCount; i++) {
+          const mat = baseMat.clone();
+          const panel = new THREE.Mesh(panelGeo, mat);
+
+          const x = (Math.random() - 0.5) * 12;
+          const y = 1.2 + Math.random() * 5;
+          const z = -1.5 + Math.random() * 3;
+
+          panel.position.set(x, y, z);
+          panel.rotation.y = (Math.random() - 0.5) * 0.7;
+          panel.rotation.x = (Math.random() - 0.5) * 0.2;
+          panel.userData.baseRotation = panel.rotation.clone();
+          panel.userData.floatOffset = Math.random() * Math.PI * 2;
+
+          const edgeGeo = new THREE.EdgesGeometry(panelGeo);
+          const edgeMat = new THREE.LineBasicMaterial({
+            color: 0x1f2937,
+            transparent: true,
+            opacity: 0.9
+          });
+          const edges = new THREE.LineSegments(edgeGeo, edgeMat);
+          panel.add(edges);
+
+          certGroup.add(panel);
+        }
+
+        scene.add(certGroup);
+
+        window.addEventListener("resize", onResize);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("scroll", onScroll);
+
+        onScroll();
+      }
+
+      function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function onMouseMove(event) {
+        const x = (event.clientX / window.innerWidth) * 2 - 1;
+        const y = (event.clientY / window.innerHeight) * 2 - 1;
+        targetMouseX = x;
+        targetMouseY = y;
+      }
+
+      function onScroll() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const factor = Math.min(scrollY / 1000, 1);
+        camera.position.z = 18 + factor * 2;
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const delta = clock.getDelta();
+        const t = clock.getElapsedTime();
+
+        mouseX += (targetMouseX - mouseX) * 0.06;
+        mouseY += (targetMouseY - mouseY) * 0.06;
+        hoverValue += (hoverTarget - hoverValue) * 0.08;
+
+        camera.position.x = mouseX * 2.5;
+        camera.position.y = 2.5 + mouseY * 1.4;
+        camera.lookAt(0, 2, 0);
+
+        if (particles) {
+          particles.rotation.y += 0.02 * delta;
+        }
+
+        if (gridGroup) {
+          gridGroup.position.x = mouseX * 0.8;
+          gridGroup.position.y = -mouseY * 0.4;
+          gridGroup.rotation.y = -mouseX * 0.15;
+        }
+
+        if (certGroup) {
+          certGroup.rotation.y = Math.sin(t * 0.12) * 0.12;
+
+          certGroup.children.forEach((panel) => {
+            const offset = panel.userData.floatOffset || 0;
+            const baseRot = panel.userData.baseRotation || {
+              x: 0,
+              y: 0
+            };
+
+            const float = Math.sin(t * 0.7 + offset) * 0.08;
+            panel.position.y += float * delta * 4;
+
+            panel.rotation.y =
+              baseRot.y +
+              Math.sin(t * 0.5 + offset) * 0.03 +
+              hoverValue * 0.06;
+            panel.rotation.x =
+              baseRot.x +
+              Math.cos(t * 0.6 + offset) * 0.03;
+
+            const mat = panel.material;
+            if (mat && "emissiveIntensity" in mat) {
+              mat.emissiveIntensity = 0.45 + hoverValue * 0.25;
+            }
+          });
+        }
+
+        renderer.render(scene, camera);
+      }
+    })();
+
+    // === Card reveal + subtle 3D tilt =======================================
+    (function () {
+      const prefersReduced =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const cards = document.querySelectorAll(".cert-card");
+
+      // Scroll reveal
+      if ("IntersectionObserver" in window) {
+        const io = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in-view");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.2 }
+        );
+
+        cards.forEach((card) => io.observe(card));
+      } else {
+        cards.forEach((card) => card.classList.add("in-view"));
+      }
+
+      // Hover tilt
+      if (!prefersReduced) {
+        cards.forEach((card) => {
+          card.addEventListener("mousemove", (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = -((y - centerY) / 36);
+            const rotateY = (x - centerX) / 36;
+
+            card.style.transform =
+              "translateY(0) rotateX(" +
+              rotateX +
+              "deg) rotateY(" +
+              rotateY +
+              "deg)";
+            card.style.boxShadow =
+              "0 18px 40px rgba(15, 23, 42, 0.95)";
+            card.style.borderColor =
+              "rgba(129, 140, 248, 0.9)";
+            card.style.background =
+              "linear-gradient(135deg, rgba(15,23,42,0.96), rgba(30,64,175,0.25))";
+          });
+
+          card.addEventListener("mouseenter", () => {
+            if (window.__setCertHover) window.__setCertHover(1);
+          });
+
+          card.addEventListener("mouseleave", () => {
+            card.style.transform =
+              "translateY(0) rotateX(0deg) rotateY(0deg)";
+            card.style.boxShadow =
+              "0 14px 32px rgba(15, 23, 42, 0.9)";
+            card.style.borderColor = "var(--border-soft)";
+            card.style.background = "var(--card-bg)";
+            if (window.__setCertHover) window.__setCertHover(0);
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
