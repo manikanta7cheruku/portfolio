@@ -7,38 +7,15 @@ import { navigateToSection } from "@/lib/navFade";
 
 const ids = sections.map((s) => s.id);
 
-/**
- * Desktop: a fixed index on the right edge with a scroll progress line. Labels stay collapsed
- * to just their number until hovered, focused, or current, then expand, so all nine sections
- * are reachable without nine permanently-visible labels crowding the edge.
- * Mobile: a compact bottom bar showing the current section that opens the full list behind a
- * dimmed backdrop; the background stops scrolling while it's open.
- * Every link resolves through navigateToSection, so choosing a section never shows a visible
- * scroll through the page in between.
- */
 export default function SideIndex() {
   const active = useActiveSection(ids);
   const [open, setOpen] = useState(false);
-  // On desktop the link list is always meant to be reachable, just visually collapsed by CSS
-  // (opacity and max-height) until hovered or focused. It must never be inert there. inert is
-  // only appropriate on mobile, where the collapsed rows are genuinely closed behind the panel.
-  // Read synchronously on first render (not just in an effect) so desktop links are never
-  // briefly inert on first paint.
-  const [isDesktop, setIsDesktop] = useState(() =>
-    typeof window === "undefined" ? false : window.matchMedia("(min-width: 900px)").matches,
-  );
   const nav = useRef<HTMLElement>(null);
+  const collapseRef = useRef<HTMLDivElement>(null);
   const listId = useId();
   const current = sections.find((s) => s.id === active) ?? sections[0];
 
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 900px)");
-    const update = () => setIsDesktop(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
+  // Scroll progress indicator
   useEffect(() => {
     let frame = 0;
     const update = () => {
@@ -60,8 +37,25 @@ export default function SideIndex() {
     };
   }, []);
 
-  // While the mobile panel is open: Escape closes it, a tap outside it closes it, and the
-  // page behind it stops scrolling so the panel doesn't drift out from under a finger.
+  // Safely manage inert attribute via DOM on mobile to prevent SSR hydration errors
+  useEffect(() => {
+    const updateInert = () => {
+      const isMobile = window.innerWidth < 900;
+      if (collapseRef.current) {
+        if (isMobile && !open) {
+          collapseRef.current.setAttribute("inert", "");
+        } else {
+          collapseRef.current.removeAttribute("inert");
+        }
+      }
+    };
+
+    updateInert();
+    window.addEventListener("resize", updateInert);
+    return () => window.removeEventListener("resize", updateInert);
+  }, [open]);
+
+  // Mobile panel open/close interactions
   useEffect(() => {
     if (!open) return;
 
@@ -112,10 +106,14 @@ export default function SideIndex() {
             <span className="index__cur-icon" aria-hidden="true" />
           </span>
         </button>
-        <div className="index__collapse" id={listId} inert={(!isDesktop && !open) ? true : undefined}>
+        <div ref={collapseRef} className="index__collapse" id={listId}>
           <ol className="index__list">
             {sections.map((s, i) => (
-              <li key={s.id} data-current={s.id === active ? "true" : undefined} style={{ "--i": i } as CSSProperties}>
+              <li
+                key={s.id}
+                data-current={s.id === active ? "true" : undefined}
+                style={{ "--i": i } as CSSProperties}
+              >
                 <a
                   className="index__link"
                   href={`#${s.id}`}
