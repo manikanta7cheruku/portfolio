@@ -19,7 +19,15 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", displ
 const title = `${site.name} | ${site.role}`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(
+    site.url && site.url.startsWith("http")
+      ? site.url
+      : process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "http://localhost:3000"
+  ),
   title: { default: title, template: `%s | ${site.name}` },
   description: site.description,
   alternates: { canonical: "/" },
