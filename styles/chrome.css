@@ -1,0 +1,313 @@
+/* ---------- full-screen fade used by navigateToSection (lib/navFade.ts) ---------- */
+.nav-fade-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- top bar ---------- */
+.top {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: max(0.6rem, env(safe-area-inset-top, 0px)) var(--gutter) 1.1rem;
+  background: linear-gradient(var(--bg) 35%, transparent);
+  font-size: 0.9rem;
+}
+.top__mark {
+  text-decoration: none;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.15rem;
+  line-height: 1.08;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.top__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.top__link {
+  color: var(--fg-2);
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.25s;
+}
+.top__link:hover {
+  color: var(--accent);
+}
+
+/* ---------- theme control: two words and a dot that travels between them ---------- */
+.theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0 0.25rem;
+  background: none;
+  border: 0;
+  color: var(--fg-2);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.theme__opt {
+  transition: color 0.3s;
+}
+.theme__sep {
+  position: relative;
+  width: 1.4rem;
+  height: 1px;
+  background: var(--line-strong);
+}
+.theme__sep::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  transition: left 0.45s var(--ease);
+}
+:root[data-theme="light"] .theme__sep::after {
+  left: 100%;
+}
+:root[data-theme="dark"] .theme__opt--dark,
+:root[data-theme="light"] .theme__opt--light {
+  color: var(--fg);
+}
+
+/* ---------- section index: mobile first (bottom bar) ---------- */
+.index {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 100;
+  padding: 0 var(--gutter) env(safe-area-inset-bottom, 0px);
+  background: var(--bg);
+  /* A single thin hairline, matching every other divider on the site. The heavier drop
+     shadow this had before read as a thick band sitting on the page. When the panel opens,
+     this border fades out so it doesn't stack with the panel's own top border right above it
+     and double up into that same thick-line look. */
+  border-top: 1px solid var(--line);
+  transition: border-color 0.3s ease;
+}
+.index.is-open {
+  border-top-color: transparent;
+}
+.index__toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.7rem 0;
+  background: none;
+  border: 0;
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.index__cur {
+  color: var(--accent);
+}
+.index__cur-action {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  color: var(--fg-2);
+}
+.index__cur-icon {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-left: 0.5rem;
+  border-right: 1.5px solid var(--fg-2);
+  border-bottom: 1.5px solid var(--fg-2);
+  transform: rotate(-45deg);
+  transition: transform 0.35s var(--ease);
+}
+.index.is-open .index__cur-icon {
+  transform: rotate(135deg);
+}
+
+/*
+ * Dims the page behind the open panel and gives the visitor a large, obvious area to tap to
+ * close it. Always in the DOM, toggled with opacity/pointer-events so it can transition instead
+ * of snapping in and out with the panel.
+ */
+.index__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+  background: rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.index__scrim.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/*
+ * The list is always in the DOM on mobile. The wrapping .index__collapse animates open with
+ * grid-template-rows (0fr to 1fr), so opening and closing are one continuous motion instead of
+ * the instant display:none/block swap this previously used. The inner .index__list itself is
+ * never a grid, so its own li layout is untouched.
+ */
+.index__collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  background: var(--bg-2);
+  border-top: 1px solid transparent;
+  /* A touch slower opening than closing: the open reads as an unfurl, the close as a quick
+     dismissal, which feels more deliberate than one symmetric speed both ways. */
+  transition:
+    grid-template-rows 0.55s var(--ease),
+    border-color 0.55s var(--ease);
+}
+.index.is-open .index__collapse {
+  grid-template-rows: 1fr;
+  border-top-color: var(--line-strong);
+  transition:
+    grid-template-rows 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.index__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem var(--gutter) 1rem;
+  overflow: hidden;
+  min-height: 0;
+}
+/* Each row lifts in slightly after the last, driven by the --i custom property SideIndex.tsx
+   sets on every <li>. Reset to fully visible on desktop, where the list is never collapsed. */
+.index__list li {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s var(--ease);
+  transition-delay: 0s;
+}
+.index.is-open .index__list li {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(90ms + var(--i, 0) * 45ms);
+}
+.index__link {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 44px;
+  padding: 0.5rem 0;
+  color: var(--fg-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.index__link[aria-current="location"] {
+  color: var(--fg);
+}
+.index__link[aria-current="location"] .index__n {
+  color: var(--accent);
+}
+.index__track {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--line);
+}
+.index__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(var(--scroll, 0));
+}
+
+/* ---------- section index: desktop (right edge) ---------- */
+@media (min-width: 900px) {
+  .index__scrim {
+    display: none;
+  }
+  .index {
+    inset: 50% var(--gutter) auto auto;
+    transform: translateY(-50%);
+    padding: 0;
+    background: none;
+  }
+  .index__toggle {
+    display: none;
+  }
+  .index__collapse {
+    display: block;
+    position: static;
+    background: none;
+    border: 0;
+  }
+  .index__list {
+    padding: 0;
+    overflow: visible;
+  }
+  .index__list li {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+      max-height 0.45s var(--ease),
+      opacity 0.3s ease;
+  }
+  .index__list li[data-current="true"] {
+    max-height: 2.5rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .index:hover .index__list li,
+  .index:focus-within .index__list li {
+    max-height: 2.5rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .index__link {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    min-height: 0;
+    padding: 0.35rem 0;
+    border: 0;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .index__track {
+    inset: 0 -1rem 0 auto;
+    width: 1px;
+    height: auto;
+  }
+  .index__fill {
+    width: 100%;
+    transform-origin: top center;
+    transform: scaleY(var(--scroll, 0));
+  }
+}

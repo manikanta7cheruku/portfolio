@@ -1,0 +1,294 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+/* Film grain: static, one fixed layer, no blend mode, so it stays cheap on phones. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: var(--grain-img);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  background: var(--fg);
+  color: var(--bg);
+  transform: translateY(-200%);
+}
+.skip:focus {
+  transform: none;
+}
+
+/* ---------- layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  padding-right: calc(var(--gutter) + var(--rail));
+}
+
+.section {
+  padding-block: clamp(5rem, 12vw, 10rem);
+}
+
+.rule {
+  display: block;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: left center;
+}
+
+.split {
+  display: grid;
+  gap: 2rem 4rem;
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* ---------- type ---------- */
+.mono {
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: var(--fs-mono);
+}
+
+.display-m,
+.display-l {
+  font-family: var(--font-serif), "Iowan Old Style", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.display-m {
+  font-size: var(--fs-h2);
+  line-height: 1.02;
+  max-width: 18ch;
+}
+.display-l {
+  font-size: var(--fs-display);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+  color: var(--fg-2);
+  max-width: 34ch;
+}
+
+.minor {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--fg-2);
+  margin-bottom: 0.9rem;
+}
+
+.prose p {
+  max-width: 60ch;
+  margin-bottom: 1.1em;
+}
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.link {
+  color: inherit;
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.28em;
+  transition:
+    color 0.25s,
+    text-decoration-color 0.25s;
+}
+.link:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.chips {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+}
+.chips li {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  color: var(--fg-2);
+}
+
+.plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.plain li {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--line);
+}
+.plain--loose li {
+  padding: 0.85rem 0;
+}
+
+/* ---------- masked word reveal ---------- */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.06em 0 0.14em;
+  margin: -0.06em 0 -0.14em;
+}
+.wi {
+  display: inline-block;
+}
+
+/*
+ * Animated elements are hidden only while html.motion is set. The class is added before first
+ * paint when motion is allowed and removed if the animation layer fails, so content is never
+ * stranded invisible.
+ */
+html.motion [data-hero],
+html.motion [data-reveal] {
+  visibility: hidden;
+}
+@media print {
+  html.motion [data-hero],
+  html.motion [data-reveal] {
+    visibility: visible;
+  }
+}
+
+/* ---------- theme change: the new theme opens as a circle from the control ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* ---------- 404 and error ---------- */
+.lost {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+.lost .wrap {
+  display: grid;
+  gap: 1.25rem;
+  justify-items: start;
+}
+.lost__text {
+  color: var(--fg-2);
+  max-width: 44ch;
+}
+.lost__code {
+  color: var(--accent);
+}
+
+.foot {
+  padding-block: 2rem 2.5rem;
+  border-top: 1px solid var(--line);
+  color: var(--fg-2);
+  font-size: 0.85rem;
+}
+@media (max-width: 1099px) {
+  .foot {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+}

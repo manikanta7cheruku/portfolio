@@ -1,0 +1,49 @@
+/*
+ * Design tokens. Two themes, each designed on its own:
+ * dark is warm near-black with a soft paper white; light is warm paper with ink, not #fff and #000.
+ * One accent (verdigris), used for state and focus, never for decoration.
+ */
+:root {
+  color-scheme: dark;
+
+  --bg: #0d0c0b;
+  --bg-2: #151412;
+  --fg: #ebe6db;
+  --fg-2: #a39d92;
+  --line: rgba(235, 230, 219, 0.13);
+  --line-strong: rgba(235, 230, 219, 0.26);
+  --accent: #7fb8a8;
+  --grain: 0.06;
+  --grain-img: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --rail: 0px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-mono: 0.78rem;
+  --fs-lead: clamp(1.2rem, 1.02rem + 0.8vw, 1.65rem);
+  --fs-h2: clamp(2.1rem, 1.25rem + 3.6vw, 4.6rem);
+  --fs-h3: clamp(1.5rem, 1.2rem + 1.3vw, 2.3rem);
+  --fs-display: clamp(3.1rem, 1.4rem + 9.4vw, 11.5rem);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #ece7dc;
+  --bg-2: #e3ddcf;
+  --fg: #181613;
+  --fg-2: #574f45;
+  --line: rgba(24, 22, 19, 0.16);
+  --line-strong: rgba(24, 22, 19, 0.32);
+  --accent: #1d6558;
+  --grain: 0.08;
+  --grain-img: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --rail: 6.5rem;
+  }
+}
