@@ -55,8 +55,36 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "showtime-sentinel",
+    slug: "provenance",
     index: "02",
+    name: "Provenance",
+    descriptor: "Jobs, with receipts",
+    kind: "Job intelligence platform",
+    summary:
+      "A multi-tenant platform that finds jobs from permitted sources, extracts what each role requires, compares those requirements against a candidate's real evidence, and explains every conclusion with traceable proof. It never submits an application on the user's behalf.",
+    question: "How do you match a candidate to a job and prove why, without hallucinating qualifications?",
+    decision:
+      "Code enforces and computes while LLMs only interpret and reason, so every match is grounded in evidence the candidate actually provided.",
+    role: "Built solo: architecture, data model, agent design, source adapters and interface.",
+    stack: [
+      "Python",
+      "PostgreSQL",
+      "pgvector",
+      "LangGraph",
+      "Next.js",
+      "Docker",
+    ],
+    status: {
+      label: "In progress",
+      note: "Phase 1 foundation is underway. Planning pack and architecture are complete.",
+      live: false,
+    },
+    flow: ["Source", "Extract", "Compare evidence", "Explain with proof"],
+    links: { github: `${gh}/provenance` },
+  },
+  {
+    slug: "showtime-sentinel",
+    index: "03",
     name: "Showtime Sentinel",
     descriptor: "A ticket watcher that never notifies twice",
     kind: "Async monitoring service",
@@ -87,7 +115,7 @@ export const projects: Project[] = [
   },
   {
     slug: "hackathon-team-dynamics",
-    index: "03",
+    index: "04",
     name: "Hackathon Team Dynamics",
     descriptor: "Predicting team performance, and showing why",
     kind: "Machine learning",
@@ -108,7 +136,7 @@ export const projects: Project[] = [
   },
   {
     slug: "agentfetch",
-    index: "04",
+    index: "05",
     name: "AgentFetch",
     descriptor: "Live data behind an agent-ready interface",
     kind: "API and dashboard",
@@ -129,7 +157,7 @@ export const projects: Project[] = [
   },
   {
     slug: "cobuild",
-    index: "05",
+    index: "06",
     name: "CoBuild",
     descriptor: "Where founders find their squad",
     kind: "Web platform",
@@ -148,7 +176,7 @@ export const projects: Project[] = [
   },
   {
     slug: "resume-builder",
-    index: "06",
+    index: "07",
     name: "Resume Builder",
     descriptor: "A resume form with a live preview",
     kind: "Web app",

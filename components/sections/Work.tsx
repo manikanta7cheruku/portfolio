@@ -17,7 +17,7 @@ export default function Work() {
             <SplitWords text="Things I have built" />
           </h2>
           <p className="lead">
-            Six projects. SEVEN is the largest, so it also gets its own chapter right after this
+            Seven projects. SEVEN is the largest, so it also gets its own chapter right after this
             list.
           </p>
         </div>
